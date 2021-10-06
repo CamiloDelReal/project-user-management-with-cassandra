@@ -1,0 +1,21 @@
+server:
+  port: 9050
+
+spring:
+  application:
+    name: user-management-with-cassandra
+
+  data:
+    cassandra:
+      keyspace-name: users_database
+      port: 9042
+      username:
+      password:
+      local-datacenter: datacenter1
+
+security:
+  token-key: 123456
+  token-type: Bearer
+  separator: --
+  validity: 10000000
+  authorities-key: authorities
