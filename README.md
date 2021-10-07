@@ -8,6 +8,5 @@ Web service to manage users with CRUD and authentication operations, using Sprin
 - Cassandra database
   * Cassandra entities
   * Cassandra repositories
-- Postman queries
 - Database script
 - Docker compose script config for requirements
