@@ -13,6 +13,9 @@ import java.util.UUID;
 @ToString
 @Table("roles")
 public class Role {
+    public static final String GUEST = "Guest";
+    public static final String ADMINISTRATOR = "Administrator";
+
     @PrimaryKeyColumn(name = "id", type = PrimaryKeyType.PARTITIONED)
     @Indexed
     private String uid;

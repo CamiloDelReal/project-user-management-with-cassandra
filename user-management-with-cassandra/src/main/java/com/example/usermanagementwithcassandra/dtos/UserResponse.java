@@ -2,7 +2,7 @@ package com.example.usermanagementwithcassandra.dtos;
 
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,5 +14,5 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String email;
-    private Set<String> roles;
+    private List<String> roles;
 }

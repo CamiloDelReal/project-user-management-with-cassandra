@@ -98,12 +98,13 @@ public class UserService implements UserDetailsService {
         user.setUid(UUID.randomUUID().toString());
         user.setProtectedPassword(passwordEncoder.encode(userRequest.getPassword()));
         if(userRequest.getRoles() == null || userRequest.getRoles().isEmpty()) {
-            Role guestRole = roleRepository.findByName("Guest").orElse(null);
+            Role guestRole = roleRepository.findByName(Role.GUEST).orElse(null);
             user.setRoles(Set.of(guestRole.getName()));
         } else {
-            Set<String> roles = userRequest.getRoles().stream().map(it -> roleRepository.findByUid(it).orElse(null)).filter(Objects::nonNull).map(Role::getName).collect(Collectors.toSet());
+            Set<String> roles = userRequest.getRoles().stream().map(it -> roleRepository.findByName(it).orElse(null)).filter(Objects::nonNull).map(Role::getName).collect(Collectors.toSet());
             user.setRoles(roles);
         }
+        System.out.println("Save user " + user);
         userRepository.save(user);
         UserResponse response = mapper.map(user, UserResponse.class);
         return response;
@@ -149,12 +150,12 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean createUserRequestHasAdminRole(UserRequest userRequest) {
-        Role adminRole = roleRepository.findByName("Administrator").orElse(null);
+        Role adminRole = roleRepository.findByName(Role.ADMINISTRATOR).orElse(null);
         return userRequest.getRoles() != null && userRequest.getRoles().stream().anyMatch(it -> Objects.equals(it, adminRole.getName()));
     }
 
     public boolean createUserRequestHasAdminRole(User user) {
-        Role adminRole = roleRepository.findByName("Administrator").orElse(null);
+        Role adminRole = roleRepository.findByName(Role.ADMINISTRATOR).orElse(null);
         return user.getRoles() != null && user.getRoles().stream().anyMatch(it -> Objects.equals(it, adminRole.getName()));
     }
 
@@ -166,10 +167,15 @@ public class UserService implements UserDetailsService {
             user.setLastName(userRequest.getLastName());
             user.setEmail(userRequest.getEmail());
             user.setProtectedPassword(passwordEncoder.encode(userRequest.getPassword()));
+            Set<String> roles = null;
             if(userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()) {
-                Set<Role> roles = userRequest.getRoles().stream().map(it -> roleRepository.findByName(it).orElse(null)).filter(Objects::nonNull).collect(Collectors.toSet());
-                user.setRoles(roles.stream().map(Role::getName).collect(Collectors.toSet()));
+                roles = userRequest.getRoles().stream().map(it -> roleRepository.findByName(it).orElse(null)).filter(Objects::nonNull).map(Role::getName).collect(Collectors.toSet());
             }
+            if(userRequest.getRoles() == null || (roles != null && roles.isEmpty())) {
+                Role guestRole = roleRepository.findByName(Role.GUEST).orElse(null);
+                roles = Set.of(guestRole.getName());
+            }
+            user.setRoles(roles);
             userRepository.save(user);
             response = mapper.map(user, UserResponse.class);
         }

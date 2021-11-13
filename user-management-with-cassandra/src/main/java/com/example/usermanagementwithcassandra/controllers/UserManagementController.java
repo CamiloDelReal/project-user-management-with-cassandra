@@ -5,6 +5,7 @@ import com.example.usermanagementwithcassandra.dtos.LoginResponse;
 import com.example.usermanagementwithcassandra.dtos.UserRequest;
 import com.example.usermanagementwithcassandra.dtos.UserResponse;
 import com.example.usermanagementwithcassandra.entities.User;
+import com.example.usermanagementwithcassandra.services.RoleService;
 import com.example.usermanagementwithcassandra.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,24 @@ public class UserManagementController {
 
     private final Logger logger = LoggerFactory.getLogger(UserManagementController.class);
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public UserManagementController(UserService userService) {
+    public UserManagementController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
+    }
+
+    @GetMapping(path = "/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getAllRoles() {
+        ResponseEntity<List<String>> response = null;
+        try {
+            List<String> roles = roleService.getAll();
+            response = new ResponseEntity<>(roles, HttpStatus.OK);
+        } catch (Exception ex) {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return response;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
