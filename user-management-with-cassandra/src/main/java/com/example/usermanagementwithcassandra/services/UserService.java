@@ -159,8 +159,11 @@ public class UserService implements UserDetailsService {
         return user.getRoles() != null && user.getRoles().stream().anyMatch(it -> Objects.equals(it, adminRole.getName()));
     }
 
-    public UserResponse editUser(String id, UserRequest userRequest) {
-        User user = userRepository.findByUid(id).orElse(null);
+    public UserResponse editUser(String uid, UserRequest userRequest) {
+        userRepository.findAll().forEach(it -> {
+            System.out.println("APPLOGGER - editUser checker - " + it);
+        });
+        User user = userRepository.findByUid(uid).orElse(null);
         UserResponse response = null;
         if(user != null) {
             user.setFirstName(userRequest.getFirstName());
@@ -176,7 +179,9 @@ public class UserService implements UserDetailsService {
                 roles = Set.of(guestRole.getName());
             }
             user.setRoles(roles);
+            userRepository.deleteByUid(uid);
             userRepository.save(user);
+//            userRepository.insert(user);
             response = mapper.map(user, UserResponse.class);
         }
         return response;

@@ -61,12 +61,12 @@ public class UserManagementController {
         return response;
     }
 
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated and hasAuthority('Administrator') or isAuthenticated() and principal.id == #id")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable("id") String id) {
+    @GetMapping(path = "/{uid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated and hasAuthority('Administrator') or isAuthenticated() and principal.uid == #uid")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable("uid") String uid) {
         ResponseEntity<UserResponse> response = null;
         try {
-            UserResponse user = userService.getUserById(id);
+            UserResponse user = userService.getUserById(uid);
             if(user != null) {
                 response = ResponseEntity.ok(user);
             }
@@ -89,7 +89,7 @@ public class UserManagementController {
                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 if (!wannaCreateAdminUser || (principal != null && principal instanceof User && userService.createUserRequestHasAdminRole((User) principal))) {
                     UserResponse user = userService.createUser(userRequest);
-                    response = ResponseEntity.ok(user);
+                    response = new ResponseEntity<>(user, HttpStatus.CREATED);
                 } else {
                     response = new ResponseEntity<>(HttpStatus.FORBIDDEN);
                 }
@@ -103,15 +103,15 @@ public class UserManagementController {
         return response;
     }
 
-    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated and hasAuthority('Administrator') or isAuthenticated() and principal.id == #id")
-    public ResponseEntity<UserResponse> editUser(@PathVariable("id") String id, @Valid @RequestBody UserRequest userRequest) {
+    @PutMapping(path = "/{uid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated and hasAuthority('Administrator') or isAuthenticated() and principal.uid == #uid")
+    public ResponseEntity<UserResponse> editUser(@PathVariable("uid") String uid, @Valid @RequestBody UserRequest userRequest) {
         ResponseEntity<UserResponse> response = null;
         try {
             boolean wannaCreateAdminUser = userService.createUserRequestHasAdminRole(userRequest);
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if(!wannaCreateAdminUser || (principal != null && principal instanceof User && userService.createUserRequestHasAdminRole((User)principal))) {
-                UserResponse user = userService.editUser(id, userRequest);
+                UserResponse user = userService.editUser(uid, userRequest);
                 if(user != null) {
                     response = ResponseEntity.ok(user);
                 } else {
@@ -127,12 +127,13 @@ public class UserManagementController {
         return response;
     }
 
-    @DeleteMapping(path = "/{id}")
-    @PreAuthorize("isAuthenticated() and hasAuthority('Administrator') or isAuthenticated() and principal.id == #id")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
+    @DeleteMapping(path = "/{uid}")
+    @PreAuthorize("isAuthenticated() and hasAuthority('Administrator') or isAuthenticated() and principal.uid == #uid")
+    public ResponseEntity<Void> deleteUser(@PathVariable("uid") String uid) {
         ResponseEntity<Void> response = null;
+        System.out.println("APPLOGGER - deleteUser " + uid);
         try {
-            boolean success = userService.deleteUser(id);
+            boolean success = userService.deleteUser(uid);
             if(success) {
                 response = ResponseEntity.ok().build();
             } else {

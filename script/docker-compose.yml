@@ -2,7 +2,7 @@ version: '3'
 
 services:
   redis:
-    image: cassandra
+    image: cassandra:4.1
     container_name: cassandra
     ports:
       - "7000:7000"

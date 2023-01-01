@@ -1,6 +1,7 @@
 package com.example.usermanagementwithcassandra.entities;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.Indexed;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @ToString
 @Table("users")
 public class User {
-    @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+    @PrimaryKeyColumn(name = "uid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
     @Indexed
     private String uid;
     @Column("first_name")

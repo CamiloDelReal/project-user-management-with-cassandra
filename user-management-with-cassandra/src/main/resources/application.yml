@@ -8,6 +8,7 @@ spring:
   data:
     cassandra:
       keyspace-name: users_database
+      contact-points: localhost
       port: 9042
       username:
       password:

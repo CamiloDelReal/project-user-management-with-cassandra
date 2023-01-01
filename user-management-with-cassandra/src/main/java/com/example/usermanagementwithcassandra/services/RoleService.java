@@ -19,6 +19,6 @@ public class RoleService {
 
     public List<String> getAll() {
         List<Role> roles = roleRepository.findAll();
-        return roles.stream().map(r -> r.getName()).collect(Collectors.toList());
+        return roles.stream().map(Role::getName).collect(Collectors.toList());
     }
 }

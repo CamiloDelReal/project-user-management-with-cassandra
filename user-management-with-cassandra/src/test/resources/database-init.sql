@@ -15,7 +15,7 @@ create table roles
 
 create index roles__index_name
     on roles (name);
-    
+
 
 create table users
 (
@@ -34,5 +34,3 @@ create table users
 
 create index users__index_email
     on users (email);
-    
-

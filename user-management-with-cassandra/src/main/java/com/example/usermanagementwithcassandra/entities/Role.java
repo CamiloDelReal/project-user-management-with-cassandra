@@ -16,7 +16,7 @@ public class Role {
     public static final String GUEST = "Guest";
     public static final String ADMINISTRATOR = "Administrator";
 
-    @PrimaryKeyColumn(name = "id", type = PrimaryKeyType.PARTITIONED)
+    @PrimaryKeyColumn(name = "uid", type = PrimaryKeyType.PARTITIONED)
     @Indexed
     private String uid;
     @PrimaryKeyColumn(name = "name", ordinal = 0)
